@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>For Ferdawss</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ── variables ── */
+:root {
+  --rose:       #e8607a;
+  --rose-light: #f2a0b0;
+  --rose-pale:  #fde8ed;
+  --rose-deep:  #c0394f;
+  --pink:       #f7c5cf;
+  --cream:      #fff5f7;
+  --gold:       #d4956a;
+  --gold-light: #f0c99a;
+  --text:       #3d1520;
+  --text-soft:  #7a3045;
+  --shadow:     0 8px 32px rgba(200,60,80,.18);
+  --shadow-sm:  0 3px 12px rgba(200,60,80,.13);
+  --r:          20px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+html,body{
+  min-height:100%;
+  font-family:'Quicksand',sans-serif;
+  background:var(--cream);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23e8607a' d='M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z'/%3E%3C/svg%3E") 12 12, auto;
+}
+
+/* ── floating hearts background ── */
+#hearts-bg{
+  position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;
+}
+.fh{
+  position:absolute;
+  font-size:var(--s);
+  opacity:0;
+  animation: floatHeart var(--d) ease-in var(--delay) infinite;
+  left:var(--x);
+  bottom:-60px;
+}
+@keyframes floatHeart{
+  0%  {opacity:0;transform:translateY(0) rotate(var(--r)) scale(.7);}
+  10% {opacity:.55;}
+  90% {opacity:.3;}
+  100%{opacity:0;transform:translateY(-110vh) rotate(calc(var(--r) + 40deg)) scale(1.1);}
+}
+
+/* ── gate screen ── */
+#gate{
+  position:fixed;inset:0;z-index:100;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,#fce4ec 0%,#ffd6e0 40%,#ffe0ec 100%);
+  padding:24px;
+  transition:opacity .7s ease, visibility .7s ease;
+}
+#gate.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+
+.gate-card{
+  background:#fff;
+  border-radius:var(--r);
+  box-shadow:var(--shadow);
+  border:2px solid var(--pink);
+  padding:40px 36px 32px;
+  max-width:420px;width:100%;
+  text-align:center;
+  animation:cardPop .6s cubic-bezier(.36,1.56,.64,1) both;
+}
+@keyframes cardPop{
+  from{opacity:0;transform:scale(.88);}
+  to  {opacity:1;transform:scale(1);}
+}
+
+.gate-heart{font-size:52px;display:block;margin-bottom:12px;animation:pulse 1.6s ease infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
+
+.gate-title{
+  font-family:'Playfair Display',serif;
+  font-size:1.7rem;
+  color:var(--rose-deep);
+  margin-bottom:8px;
+  line-height:1.2;
+}
+.gate-sub{
+  font-size:.9rem;
+  color:var(--text-soft);
+  margin-bottom:24px;
+  line-height:1.6;
+  font-weight:500;
+}
+
+#key-input{
+  width:100%;
+  padding:13px 18px;
+  border-radius:12px;
+  border:2px solid var(--pink);
+  background:var(--rose-pale);
+  color:var(--text);
+  font-family:'Quicksand',sans-serif;
+  font-size:15px;
+  font-weight:700;
+  text-align:center;
+  outline:none;
+  letter-spacing:.06em;
+  transition:border-color .2s,box-shadow .2s;
+  margin-bottom:12px;
+}
+#key-input:focus{border-color:var(--rose);box-shadow:0 0 0 3px rgba(232,96,122,.15);}
+#key-input::placeholder{color:var(--rose-light);letter-spacing:.02em;}
+
+#unlock-btn{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  background:linear-gradient(135deg,var(--rose) 0%,var(--rose-deep) 100%);
+  color:#fff;
+  font-family:'Quicksand',sans-serif;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 4px 0 #a02840, var(--shadow-sm);
+  transition:transform .12s,box-shadow .12s;
+  letter-spacing:.04em;
+}
+#unlock-btn:hover {transform:translateY(-2px);box-shadow:0 6px 0 #a02840,var(--shadow);}
+#unlock-btn:active{transform:translateY(2px); box-shadow:0 2px 0 #a02840;}
+
+#gate-error{
+  margin-top:12px;
+  font-size:13px;
+  font-weight:700;
+  color:var(--rose-deep);
+  min-height:18px;
+  transition:opacity .2s;
+}
+
+/* ── main vault (hidden until unlocked) ── */
+#vault{
+  position:relative;z-index:1;
+  opacity:0;visibility:hidden;
+  transition:opacity .9s ease .2s, visibility .9s ease .2s;
+}
+#vault.visible{opacity:1;visibility:visible;}
+
+/* ── vault hero ── */
+.vault-hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+  padding:40px 24px;
+  background:linear-gradient(160deg,#fce4ec 0%,#ffd6e0 50%,#fff0f3 100%);
+  position:relative;overflow:hidden;
+}
+
+.vault-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(255,255,255,.55),transparent);
+  pointer-events:none;
+}
+
+.hero-label{
+  font-family:'Quicksand',sans-serif;
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.35em;
+  text-transform:uppercase;
+  color:var(--rose);
+  margin-bottom:16px;
+  opacity:0;
+  animation:fadeUp .7s ease forwards .3s;
+}
+
+.hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.8rem,8vw,5.5rem);
+  font-weight:700;
+  line-height:1.05;
+  color:var(--rose-deep);
+  margin-bottom:20px;
+  opacity:0;
+  animation:fadeUp .8s ease forwards .5s;
+}
+.hero-title em{
+  font-style:italic;
+  color:var(--rose);
+  display:block;
+}
+
+.hero-sub{
+  font-size:1.05rem;
+  font-weight:500;
+  color:var(--text-soft);
+  max-width:460px;
+  line-height:1.8;
+  margin-bottom:48px;
+  opacity:0;
+  animation:fadeUp .8s ease forwards .7s;
+}
+
+.scroll-hint{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-size:.75rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--rose-light);
+  opacity:0;
+  animation:fadeUp .6s ease forwards 1.1s;
+}
+.scroll-arrow{
+  width:2px;height:32px;
+  background:linear-gradient(180deg,var(--rose-light),transparent);
+  border-radius:2px;
+  animation:scrollPulse 1.8s ease infinite;
+}
+@keyframes scrollPulse{0%,100%{transform:scaleY(1);opacity:.6;}50%{transform:scaleY(1.3);opacity:1;}}
+
+/* ── section title ── */
+.section-label{
+  text-align:center;
+  margin:80px 0 40px;
+  padding:0 24px;
+}
+.section-label h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.6rem,4vw,2.4rem);
+  color:var(--rose-deep);
+  margin-bottom:8px;
+}
+.section-label p{
+  font-size:.9rem;font-weight:500;color:var(--text-soft);
+  max-width:400px;margin:0 auto;line-height:1.6;
+}
+
+/* ── rooms grid ── */
+.rooms{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:24px;
+  max-width:1000px;
+  margin:0 auto;
+  padding:0 24px 100px;
+}
+
+/* ── room card ── */
+.room{
+  background:#fff;
+  border-radius:var(--r);
+  border:2px solid var(--pink);
+  box-shadow:var(--shadow-sm);
+  overflow:hidden;
+  cursor:pointer;
+  transition:transform .25s cubic-bezier(.36,1.3,.64,1), box-shadow .25s ease;
+  position:relative;
+}
+.room:hover{
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:var(--shadow);
+}
+.room:hover .room-door{transform:perspective(600px) rotateY(-28deg);}
+
+.room-top{
+  height:140px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.room-top::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,rgba(255,255,255,.35));
+  pointer-events:none;
+}
+.room-icon{font-size:52px;z-index:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,.12));}
+
+.room-door{
+  position:absolute;inset:0;
+  border-right:3px solid rgba(255,255,255,.4);
+  transform-origin:left center;
+  transition:transform .5s cubic-bezier(.36,1.1,.64,1);
+  background:inherit;
+}
+
+.room-body{padding:20px 20px 22px;}
+.room-name{
+  font-family:'Playfair Display',serif;
+  font-size:1.2rem;color:var(--rose-deep);
+  margin-bottom:6px;
+}
+.room-desc{font-size:.85rem;font-weight:500;color:var(--text-soft);line-height:1.6;}
+
+.room-tag{
+  display:inline-block;
+  margin-top:12px;
+  padding:4px 12px;
+  border-radius:999px;
+  background:var(--rose-pale);
+  border:1px solid var(--pink);
+  font-size:.72rem;font-weight:700;
+  color:var(--rose);letter-spacing:.04em;text-transform:uppercase;
+}
+
+/* room colour variants */
+.room-a .room-top{background:linear-gradient(135deg,#ffd6e0,#ffb3c6);}
+.room-b .room-top{background:linear-gradient(135deg,#ffc8d8,#f7a0b8);}
+.room-c .room-top{background:linear-gradient(135deg,#ffe0ec,#ffc0d0);}
+.room-d .room-top{background:linear-gradient(135deg,#ffd0e8,#f0a0c0);}
+.room-e .room-top{background:linear-gradient(135deg,#ffe8d0,#f0c0a0);}
+.room-f .room-top{background:linear-gradient(135deg,#ffd8e8,#f8b0c8);}
+
+/* ── modal overlay ── */
+#modal-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(61,21,32,.55);
+  backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  opacity:0;visibility:hidden;
+  transition:opacity .35s ease,visibility .35s ease;
+}
+#modal-overlay.open{opacity:1;visibility:visible;}
+
+.modal{
+  background:#fff;
+  border-radius:var(--r);
+  box-shadow:0 24px 64px rgba(200,60,80,.25);
+  border:2px solid var(--pink);
+  width:100%;max-width:680px;
+  max-height:88vh;
+  overflow-y:auto;
+  padding:36px 32px 32px;
+  position:relative;
+  transform:scale(.9) translateY(20px);
+  transition:transform .35s cubic-bezier(.36,1.3,.64,1);
+  scrollbar-width:thin;scrollbar-color:var(--pink) transparent;
+}
+#modal-overlay.open .modal{transform:scale(1) translateY(0);}
+
+.modal-close{
+  position:absolute;top:16px;right:16px;
+  background:var(--rose-pale);border:none;
+  width:34px;height:34px;border-radius:50%;
+  font-size:18px;cursor:pointer;color:var(--rose-deep);
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,transform .2s;
+}
+.modal-close:hover{background:var(--pink);transform:scale(1.1);}
+
+.modal-title{
+  font-family:'Playfair Display',serif;
+  font-size:1.7rem;color:var(--rose-deep);
+  margin-bottom:6px;
+}
+.modal-sub{font-size:.88rem;color:var(--text-soft);font-weight:500;margin-bottom:24px;}
+.modal-divider{height:2px;background:linear-gradient(90deg,var(--pink),transparent);margin-bottom:24px;border-radius:2px;}
+
+/* video grid */
+.video-grid{display:grid;gap:16px;}
+.video-item iframe{
+  width:100%;aspect-ratio:16/9;
+  border-radius:12px;border:2px solid var(--pink);
+  background:#000;
+}
+.video-label{
+  font-size:.82rem;font-weight:700;color:var(--text-soft);
+  margin-top:6px;letter-spacing:.02em;
+}
+
+/* letter */
+.letter{
+  font-family:'Playfair Display',serif;
+  font-size:1rem;
+  line-height:2;
+  color:var(--text);
+  white-space:pre-line;
+}
+.letter-sig{
+  margin-top:28px;
+  font-style:italic;
+  color:var(--rose-deep);
+  font-size:1.1rem;
+}
+
+/* 100 reasons */
+.reasons-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:10px;
+}
+.reason-item{
+  background:var(--rose-pale);
+  border:1px solid var(--pink);
+  border-radius:12px;
+  padding:10px 14px;
+  font-size:.85rem;font-weight:600;
+  color:var(--text);line-height:1.5;
+  display:flex;gap:8px;align-items:flex-start;
+}
+.reason-num{
+  font-family:'Playfair Display',serif;
+  font-size:.75rem;color:var(--rose-light);
+  font-style:italic;min-width:22px;padding-top:1px;
+}
+
+/* placeholder content */
+.placeholder-note{
+  text-align:center;padding:32px 16px;
+  font-size:.9rem;color:var(--rose-light);font-weight:600;
+  font-style:italic;
+}
+
+/* ── photo gallery ── */
+.photo-gallery {
+  columns: 2;
+  column-gap: 10px;
+  width: 100%;
+}
+.photo-gallery .photo-item {
+  break-inside: avoid;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: zoom-in;
+  position: relative;
+  border: 2px solid var(--pink);
+  transition: transform .25s cubic-bezier(.36,1.3,.64,1), box-shadow .25s;
+}
+.photo-gallery .photo-item:hover {
+  transform: scale(1.03);
+  box-shadow: var(--shadow);
+}
+.photo-gallery .photo-item img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  transition: opacity .3s;
+}
+.photo-gallery .photo-item img.loading {
+  opacity: 0;
+}
+
+/* lightbox */
+#lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(30,5,12,.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s ease, visibility .3s ease;
+  cursor: zoom-out;
+}
+#lightbox.open { opacity: 1; visibility: visible; }
+#lightbox img {
+  max-width: 92vw;
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 24px 64px rgba(0,0,0,.6);
+  transform: scale(.92);
+  transition: transform .35s cubic-bezier(.36,1.3,.64,1);
+}
+#lightbox.open img { transform: scale(1); }
+#lightbox-close {
+  position: absolute;
+  top: 16px; right: 20px;
+  background: rgba(255,255,255,.12);
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+#lightbox-close:hover { background: rgba(255,255,255,.25); }
+#lightbox-nav {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+}
+#lightbox-nav button {
+  background: rgba(255,255,255,.15);
+  border: none;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background .2s;
+  box-shadow: none;
+}
+#lightbox-nav button:hover { background: rgba(255,255,255,.28); transform: none; }
+
+@media(max-width:480px){
+  .photo-gallery { columns: 2; }
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px);}
+  to  {opacity:1;transform:translateY(0);}
+}
+
+/* ── responsive ── */
+@media(max-width:520px){
+  .gate-card{padding:28px 20px 24px;}
+  .rooms{grid-template-columns:1fr 1fr;gap:14px;padding:0 16px 80px;}
+  .modal{padding:28px 20px 24px;}
+  .reasons-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:360px){
+  .rooms{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- floating hearts -->
+<div id="hearts-bg"></div>
+
+<!-- ══════════════ GATE ══════════════ -->
+<div id="gate">
+  <div class="gate-card">
+    <span class="gate-heart">🔐</span>
+    <h1 class="gate-title">You made it this far.</h1>
+    <p class="gate-sub">
+      Everything you found, every word you uncovered —<br>
+      it all leads here. One last key.
+    </p>
+    <input id="key-input" type="text" placeholder="Enter the full phrase…" autocomplete="off" spellcheck="false"/>
+    <button id="unlock-btn" onclick="tryUnlock()">Open ♥</button>
+    <p id="gate-error"></p>
+  </div>
+</div>
+
+<!-- ══════════════ VAULT ══════════════ -->
+<div id="vault">
+
+  <!-- hero -->
+  <section class="vault-hero">
+    <p class="hero-label">A gift from Ali — with everything he has</p>
+    <h1 class="hero-title">
+      Happy Birthday,
+      <em>Ferdawss.</em>
+    </h1>
+    <p class="hero-sub">
+      You solved every puzzle, found every word, followed every trail he left behind.
+      This is what was waiting at the end of all of it.
+    </p>
+    <div class="scroll-hint">
+      <span>Open your rooms</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- rooms -->
+  <div class="section-label">
+    <h2>Your Rooms</h2>
+    <p>Each door holds something made just for you. Take your time.</p>
+  </div>
+
+  <div class="rooms">
+
+    <!-- Room 1 — Main video -->
+    <div class="room room-a" onclick="openModal('modal-main')">
+      <div class="room-top">
+        <div class="room-door"></div>
+        <span class="room-icon">🎬</span>
+      </div>
+      <div class="room-body">
+        <div class="room-name">A Message From Ali</div>
+        <div class="room-desc">He has something to say. Something he's been saving for tonight.</div>
+        <span class="room-tag">Video</span>
+      </div>
+    </div>
+
+    <!-- Room 2 — Singing videos -->
+    <div class="room room-b" onclick="openModal('modal-songs')">
+      <div class="room-top">
+        <div class="room-door"></div>
+        <span class="room-icon">🎵</span>
+      </div>
+      <div class="room-body">
+        <div class="room-name">He Sang For You</div>
+        <div class="room-desc">Not everyone gets a song. You got more than one.</div>
+        <span class="room-tag">Songs</span>
+      </div>
+    </div>
+
+    <!-- Room 3 — Letter -->
+    <div class="room room-c" onclick="openModal('modal-letter')">
+      <div class="room-top">
+        <div class="room-door"></div>
+        <span class="room-icon">✉️</span>
+      </div>
+      <div class="room-body">
+        <div class="room-name">Letter</div>
+        <div class="room-desc">Words he couldn't say out loud. Written down instead.</div>
+        <span class="room-tag">Letter</span>
+      </div>
+    </div>
+
+    <!-- Room 4 — 100 reasons -->
+    <div class="room room-d" onclick="openModal('modal-reasons')">
+      <div class="room-top">
+        <div class="room-door"></div>
+        <span class="room-icon">💗</span>
+      </div>
+      <div class="room-body">
+        <div class="room-name">100 Reasons</div>
+        <div class="room-desc">One hundred things about you that he never wants to forget.</div>
+        <span class="room-tag">100 Reasons I Love You</span>
+      </div>
+    </div>
+
+    <!-- Room 5 — photos -->
+    <div class="room room-e" onclick="openModal('modal-photos')">
+      <div class="room-top">
+        <div class="room-door"></div>
+        <span class="room-icon">📸</span>
+      </div>
+      <div class="room-body">
+        <div class="room-name">Us</div>
+        <div class="room-desc">Every picture tells a story. Here are ours.</div>
+        <span class="room-tag">Photos</span>
+      </div>
+    </div>
+
+    <!-- Room 6 — placeholder -->
+    <div class="room room-f" onclick="openModal('modal-extra2')">
+      <div class="room-top">
+        <div class="room-door"></div>
+        <span class="room-icon">🌙</span>
+      </div>
+      <div class="room-body">
+        <div class="room-name">One More Thing</div>
+        <div class="room-desc">Every good story has a last chapter.</div>
+        <span class="room-tag">???</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ MODALS ══════════════ -->
+<div id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<!-- modal templates (hidden) -->
+<template id="modal-main">
+  <h2 class="modal-title">A Message From Ali</h2>
+  <p class="modal-sub">He recorded this just for you.</p>
+  <div class="modal-divider"></div>
+  <div class="video-grid">
+    <div class="video-item">
+      <!-- Replace VIDEO_ID with your YouTube unlisted video ID -->
+      <iframe src="https://www.youtube.com/embed/VIDEO_ID_MAIN" frameborder="0" allowfullscreen></iframe>
+      <p class="video-label">Happy Birthday, Ferdawss ♥</p>
+    </div>
+  </div>
+</template>
+
+<template id="modal-songs">
+  <h2 class="modal-title">He Sang For You</h2>
+  <p class="modal-sub">Not everyone gets a song. You got more than one.</p>
+  <div class="modal-divider"></div>
+  <div class="video-grid">
+    <div class="video-item">
+<a href="https://www.youtube.com/watch?v=2KUjffxvLns" target="_blank">
+        <img src="https://img.youtube.com/vi/2KUjffxvLns/hqdefault.jpg"
+             style="width:100%;border-radius:12px;border:2px solid var(--pink);cursor:pointer;"/>
+      </a>
+      <p class="video-label">Song 1 — click to watch ♥</p>
+    </div>
+    <div class="video-item">
+      <a href="https://www.youtube.com/watch?v=0HWrlCB0exw" target="_blank">
+        <img src="https://img.youtube.com/vi/0HWrlCB0exw/hqdefault.jpg"
+             style="width:100%;border-radius:12px;border:2px solid var(--pink);cursor:pointer;"/>
+      </a>
+      <p class="video-label">Song 2 — click to watch ♥</p>
+    </div>
+    <div class="video-item">
+      <a href="https://www.youtube.com/watch?v=t3dN8FLF90Q" target="_blank">
+        <img src="https://img.youtube.com/vi/t3dN8FLF90Q/hqdefault.jpg"
+             style="width:100%;border-radius:12px;border:2px solid var(--pink);cursor:pointer;"/>
+      </a>
+      <p class="video-label">Song 3 — click to watch ♥</p>
+    </div>
+    <div class="video-item">
+      <a href="https://www.youtube.com/watch?v=L7RKeYaSe18" target="_blank">
+        <img src="https://img.youtube.com/vi/L7RKeYaSe18/hqdefault.jpg"
+             style="width:100%;border-radius:12px;border:2px solid var(--pink);cursor:pointer;"/>
+      </a>
+      <p class="video-label">Song 4 — click to watch ♥</p>
+    </div>
+  </div>
+</template>
+<template id="modal-letter">
+  <h2 class="modal-title">Letter</h2>
+  <p class="modal-sub">To Ferdawss</p>
+  <div class="modal-divider"></div>
+  <!-- Replace with your actual letter content -->
+  <div class="letter">
+Dear Ferdawss,
+
+I’ll keep this short, first of all, Happy birthday Ferdawss :) second  OMG YOU GONNA BE 19 AAAAAA AND AMA BE 20 WE SO OLD MY LOVE WE GONNA DIE SOON BRUUUUUUH PLEASE NEVER LEAVE MY SIDE I WANNA GROW OLD WITH YOU HOLD HANDS IN OUR 80S AND ALWAYS BE THE CUTEST COUPLE EVER, thank you Ferdawss for being my partner, for being my nebula but also for being you, for being the amazing daughter you are, thank you for being the wonder sister you are and thank you for being the perfect partner, best friend, lover and wife you are
+
+We are here to celebrate your 19th birthday, you were born in 2007, feel old yet ? but don’t worry baby, only better things are coming, hopefully next year we could spend it next to each other cus I may or may not be crying while writing this, anyways my love I hope you have a wonderful birthday, I love you so much
+
+I wish you a happy birthday and hopefully everything you wished for  last year came true, I hope you enjoyed your time being you and I hope next year will be even better, I hope you the most amazing life Ferdawss and I hope for it to always have me holding your hand and loving you Nebula
+Best regards,
+
+
+<span class="letter-sig">— Ali ♥</span>
+  </div>
+</template>
+
+<template id="modal-reasons">
+  <h2 class="modal-title">100 Reasons I Love You</h2>
+  <p class="modal-sub">One hundred things about you that deserve to be written down.</p>
+  <div class="modal-divider"></div>
+  <div class="reasons-grid" id="reasons-list"></div>
+</template>
+
+<template id="modal-photos">
+  <h2 class="modal-title">Us</h2>
+  <p class="modal-sub">Every picture tells a story. Here are ours.</p>
+  <div class="modal-divider"></div>
+  <div class="photo-gallery" id="photo-gallery"></div>
+</template>
+
+<template id="modal-extra2">
+  <h2 class="modal-title">One More Thing</h2>
+  <p class="modal-sub">Every good story has a last chapter.</p>
+  <div class="modal-divider"></div>
+  <p class="placeholder-note">This room isn't ready yet. But it will be.</p>
+</template>
+
+<!-- lightbox -->
+<div id="lightbox">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt=""/>
+  <div id="lightbox-nav">
+    <button onclick="lightboxStep(-1)">← Prev</button>
+    <button onclick="lightboxStep(1)">Next →</button>
+  </div>
+</div>
+
+<script>
+/* ── photo gallery ── */
+const PHOTO_COUNT = 36;
+const PHOTO_PATH  = 'topc/';
+const PHOTO_EXT   = '.jpg';
+let   lightboxIdx = 0;
+
+function buildPhotoGallery() {
+  const gallery = document.getElementById('photo-gallery');
+  if (!gallery) return;
+  gallery.innerHTML = '';
+  for (let i = 1; i <= PHOTO_COUNT; i++) {
+    const item = document.createElement('div');
+    item.className = 'photo-item';
+    const img = document.createElement('img');
+    img.src = PHOTO_PATH + i + PHOTO_EXT;
+    img.alt = 'Photo ' + i;
+    img.className = 'loading';
+    img.onload  = () => img.classList.remove('loading');
+    img.onerror = () => item.style.display = 'none';
+    const idx = i - 1;
+    item.onclick = () => openLightbox(idx);
+    item.appendChild(img);
+    gallery.appendChild(item);
+  }
+}
+
+function openLightbox(idx) {
+  lightboxIdx = idx;
+  const lb  = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  img.src = PHOTO_PATH + (idx + 1) + PHOTO_EXT;
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function lightboxStep(dir) {
+  lightboxIdx = ((lightboxIdx + dir) + PHOTO_COUNT) % PHOTO_COUNT;
+  document.getElementById('lightbox-img').src = PHOTO_PATH + (lightboxIdx + 1) + PHOTO_EXT;
+}
+
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
+});
+
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('lightbox');
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'ArrowLeft')  lightboxStep(-1);
+  if (e.key === 'ArrowRight') lightboxStep(1);
+  if (e.key === 'Escape')     closeLightbox();
+});
+</script>
+
+<script>
+const REASONS = [
+  "Your radiant smile",
+  "your glistering eyes",
+  "those beautiful cherry red cheeks when I compliment you",
+  "that magestic hair that defies gravity",
+  "that hot neck and shoulders that I love to kiss, nibble, and bury my face in",
+  "those hands that make me want to drop to my knees and worship you",
+  "that body that I want to hold, touch, and explore in every way possible",
+  "the way you talk so softly when in love",
+  "the way you cry so easily is so adorable",
+  "the way you get all giggly when I do the simplest things to turn you on",  
+  "that you choose me every day",
+  "how you sacrificed so much to stay together and be close",
+  "how happy you were, that night when we kept jumping around hehe",
+  "how you cook me the most delicious meals",
+  "the way you look at me when im 'asleep'",  
+  "the way you get so excited when we're playing smth",
+  "the you always ty out my hobbies",
+  "your litte evil laugh :3",
+  "you peaceful heart thats always looking for answers before assuming the worst",
+  "your clingy nature and how you hold me when im literally right next to you",  
+  "how emotional you get over the most basic showing of gratitude",
+  "how deeply you care about your family and friends",
+  "the way you support me through everything",
+  "how you make me feel like the most important person eveeeer",
+  "your wonderful sense of humor",
+  "how you always know what to say to make me smile",
+  "the way you listen to me with such genuine interest",
+  "how you make even ordinary moments feel special",
+  "that beutifull voice that whispers in my ear when you control me",
+  "how you always know how to cheer me up when I'm down",
+  "the way you look at me with such love and adoration",
+  "how you will obviously find repition in this because im dumb lol",
+  "the way you look at me when you're turned on",
+  "how you come to me first when you're in pain or struggling",
+  "how you are the most geuine heartwarming person eveeeer",  
+  "how you always pay attention to what I say",
+  "how you always respect my boundries",
+  "how you change stuff about you just to make me happy",
+  "how you get overly jealous about the dumbest things",
+  "how im always your safe space even when you're feeling hurt",
+  "how you always show up when I need you most",
+  "the way you make even the worst days better",
+  "how you make me want to be a better person",
+  "the way you love me unconditionally",
+  "how when even when we argue we argue passionatly because we both care",
+  "the way you make me feel valued and appreciated",
+  "the way you get so happy when I ask you for a call",
+  "again how beautiful your body is, like hello ? my partner is a goddess",
+  "that look you give me when I say something dumb",  
+  "the way you always want to cuddle and be close",
+  "the light in your eyes when looking at me",
+  "our virtual hugs and kisses",
+  "how you always share everything with me",
+  "when you get all shy and blushy when I compliment you",  
+  "how you push me to be the best version of myself",
+  "the audios always starting with hi babyyyyyy",
+  "how you still keep me updated even when your uncles try to hide your phone",
+  "the smile, the love, the happiness in your eyes when you see me",
+  "that disgusted look you give every dude except me",  
+  "how you laugh at my cringy puns",
+  "how you always want to share your food with me",
+  "the calmness in your voice when everything is burning down",
+  "the way you always want to take care of me when I'm sick",
+  "how you always send me pics of you and I always get to remember how beuatiful my partner is",  
+  "how you have a vivid imagination and can turn the most mundane things into something fun and exciting",
+  "how you're always worried im gonna see you for less then you are but my darling even that is more than anyone else could ever be",
+  "how we openly communicate about everything and anything and how that makes our relationship so strong",
+  "how you always want to make me happy and do things that make me smile",
+  "how you always want to be there for me and support me in everything I do",  
+  "the messages you leave me when I'm doing something hehe",
+  "how you're so selfless",
+  "how since I met you my life has been so much better in every way",
+  "how you're the calkm in my storm",
+  "How you care about everyone with your whole heart",  
+  "The way you laugh at dirty jokes",
+  "How you make everything feel warmer just by being close",
+  "Your mind — the way it works, the way it wanders",
+  "The face you make when you're upset",
+  "the little outfit checks you send me",
+  "how it's never 1 picture but 5 with different moods",
+  "how you pay so much attention when im babbling about random stuff",
+  "the goodnights and goodmornings",
+  "how much you sacraficed for us and still think you haven't done enough",  
+  "all the love letters, the first birthday, the one where I didn't wake up when I was with you, the one after I left",
+  "your lips, how I dont want to leave them alone",
+  "how you share your secrets with me and trust me with your heart",
+  "how you always want to make new memories with me and keep our love growing",
+  "how you make me feel like the luckiest person alive every single day",  
+  "how you make me feel safe, you love me uncodnitionally and care for my personal problems",
+  "the way I'm your alien and you're my nebula and how that just makes me wanna love you more",
+  "how you protect me in my absence",
+  "how you always appreciate everything I do so much even if it's not worth it",
+  "how you make me feel understood and supported in all aspects of my life",
+  "the look you gave me when I was under your conrtol mommy :3",
+  "the way im alway your good boy :)",
+  "those moments when you start making up stories and I just wanna listen to you forever",
+  "how you never let go of me no matter what you are always here",
+  "I love you for being Ferdawss",
+  "I love you for being with me",
+  "I love you.",
+];
+
+/* ══════════════════════════════════════
+   SECRET PHRASE — change if needed
+   ══════════════════════════════════════ */
+const SECRET = "HAPPY BIRTHDAY TO MY NEBULA";
+
+/* ── gate logic ── */
+function tryUnlock() {
+  const val = document.getElementById('key-input').value.trim().toUpperCase();
+  const err = document.getElementById('gate-error');
+  if (val === SECRET) {
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('vault').classList.add('visible');
+    spawnHearts();
+  } else if (val === '') {
+    err.textContent = "Don't leave it empty — you've come too far for that.";
+  } else {
+    err.textContent = "That's not quite it. Every word matters.";
+  }
+}
+
+document.getElementById('key-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') tryUnlock();
+});
+
+/* ── floating hearts ── */
+function spawnHearts() {
+  const container = document.getElementById('hearts-bg');
+  const emojis = ['❤️','🩷','💕','💗','💓','💞','🌸','✨'];
+  for (let i = 0; i < 28; i++) {
+    const el = document.createElement('div');
+    el.className = 'fh';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.setProperty('--s',  (Math.random() * 20 + 14) + 'px');
+    el.style.setProperty('--d',  (Math.random() * 8  + 7)  + 's');
+    el.style.setProperty('--delay', (Math.random() * 6) + 's');
+    el.style.setProperty('--x',  (Math.random() * 100) + 'vw');
+    el.style.setProperty('--r',  (Math.random() * 40 - 20) + 'deg');
+    container.appendChild(el);
+  }
+}
+
+/* ── modal logic ── */
+function openModal(templateId) {
+  const tmpl = document.getElementById(templateId);
+  if (!tmpl) return;
+  const content = document.getElementById('modal-content');
+  content.innerHTML = '';
+  content.appendChild(tmpl.content.cloneNode(true));
+
+  // populate reasons if needed
+  if (templateId === 'modal-reasons') {
+    const list = content.querySelector('#reasons-list');
+    if (list) {
+      REASONS.forEach((r, i) => {
+        const div = document.createElement('div');
+        div.className = 'reason-item';
+        div.innerHTML = `<span class="reason-num">${i+1}.</span><span>${r}</span>`;
+        list.appendChild(div);
+      });
+    }
+  }
+
+  // build photo gallery if needed
+  if (templateId === 'modal-photos') {
+    buildPhotoGallery();
+  }
+
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>
